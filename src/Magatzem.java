@@ -20,31 +20,40 @@ class Magatzem {
         // BEFORE SELL DATE
         if (!isCheese && !isTickets) {
 
-            if (!isLegendary && a.qualitat > 0) {
-                a.qualitat--;
+            if (!isLegendary) {
+                decreaseQuality(a);
             }
 
         } else {
 
-            if (a.qualitat < 50) {
-                a.qualitat++;
+            increaseQuality(a);
 
-                if (isTickets) {
+            if (isTickets) {
 
-                    if (a.diesPerVendre < 11 && a.qualitat < 50) {
-                        a.qualitat++;
-                    }
+                if (a.diesPerVendre < 11) {
+                    increaseQuality(a);
+                }
 
-                    if (a.diesPerVendre < 6 && a.qualitat < 50) {
-                        a.qualitat++;
-                    }
+                if (a.diesPerVendre < 6) {
+                    increaseQuality(a);
                 }
             }
         }
 
-        // DECREASE SELL-IN
-        if (!isLegendary) {
-            a.diesPerVendre--;
+        // AFTER SELL DATE
+        if (a.diesPerVendre < 0) {
+
+            if (isCheese) {
+                increaseQuality(a);
+            }
+
+            else if (isTickets) {
+                a.qualitat = 0;
+            }
+
+            else if (!isLegendary) {
+                decreaseQuality(a);
+            }
         }
 
         // AFTER SELL DATE
@@ -66,6 +75,17 @@ class Magatzem {
             return;
         }
 
+        if (a.qualitat > 0) {
+            a.qualitat--;
+        }
+    }
+    private void increaseQuality(Article a) {
+        if (a.qualitat < 50) {
+            a.qualitat++;
+        }
+    }
+
+    private void decreaseQuality(Article a) {
         if (a.qualitat > 0) {
             a.qualitat--;
         }
