@@ -12,55 +12,64 @@ class Magatzem {
     }
 
     private void updateArticle(Article a) {
-        for (int i = 0; i < articles.length; i++) {
-            if (!articles[i].nom.equals("Formatge Gidurat")
-                    && !articles[i].nom.equals("Entrades per al Concert del Trobador")) {
-                if (articles[i].qualitat > 0) {
-                    if (!articles[i].nom.equals("Martell de Thor (Llegendari)")) {
-                        articles[i].qualitat = articles[i].qualitat - 1;
-                    }
-                }
-            } else {
-                if (articles[i].qualitat < 50) {
-                    articles[i].qualitat = articles[i].qualitat + 1;
 
-                    if (articles[i].nom.equals("Entrades per al Concert del Trobador")) {
-                        if (articles[i].diesPerVendre < 11) {
-                            if (articles[i].qualitat < 50) {
-                                articles[i].qualitat = articles[i].qualitat + 1;
-                            }
-                        }
+        boolean isCheese = a.nom.equals("Formatge Gidurat");
+        boolean isTickets = a.nom.equals("Entrades per al Concert del Trobador");
+        boolean isLegendary = a.nom.equals("Martell de Thor (Llegendari)");
 
-                        if (articles[i].diesPerVendre < 6) {
-                            if (articles[i].qualitat < 50) {
-                                articles[i].qualitat = articles[i].qualitat + 1;
-                            }
-                        }
-                    }
-                }
+        // 1. Actualización de calidad antes de caducidad
+        if (!isCheese && !isTickets) {
+
+            if (a.qualitat > 0 && !isLegendary) {
+                a.qualitat--;
             }
 
-            if (!articles[i].nom.equals("Martell de Thor (Llegendari)")) {
-                articles[i].diesPerVendre = articles[i].diesPerVendre - 1;
-            }
+        } else {
 
-            if (articles[i].diesPerVendre < 0) {
-                if (!articles[i].nom.equals("Formatge Gidurat")) {
-                    if (!articles[i].nom.equals("Entrades per al Concert del Trobador")) {
-                        if (articles[i].qualitat > 0) {
-                            if (!articles[i].nom.equals("Martell de Thor (Llegendari)")) {
-                                articles[i].qualitat = articles[i].qualitat - 1;
-                            }
-                        }
-                    } else {
-                        articles[i].qualitat = articles[i].qualitat - articles[i].qualitat;
+            if (a.qualitat < 50) {
+                a.qualitat++;
+
+                if (isTickets) {
+                    if (a.diesPerVendre < 11 && a.qualitat < 50) {
+                        a.qualitat++;
                     }
-                } else {
-                    if (articles[i].qualitat < 50) {
-                        articles[i].qualitat = articles[i].qualitat + 1;
+
+                    if (a.diesPerVendre < 6 && a.qualitat < 50) {
+                        a.qualitat++;
                     }
                 }
             }
+        }
+
+        // 2. Decremento de días
+        if (!isLegendary) {
+            a.diesPerVendre--;
+        }
+
+        // 3. Después de caducidad
+        if (a.diesPerVendre < 0) {
+
+            if (!isCheese && !isTickets) {
+
+                if (a.qualitat > 0 && !isLegendary) {
+                    a.qualitat--;
+                }
+
+            } else if (isCheese) {
+
+                if (a.qualitat < 50) {
+                    a.qualitat++;
+                }
+
+            } else if (isTickets) {
+
+                a.qualitat = 0;
+            }
+        }
+    }
+    private void updateNormal(Article a) {
+        if (a.qualitat > 0) {
+            a.qualitat--;
         }
     }
 }
