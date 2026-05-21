@@ -13,45 +13,41 @@ class Magatzem {
 
     private void updateArticle(Article a) {
 
-        boolean isCheese = a.nom.equals("Formatge Gidurat");
-        boolean isTickets = a.nom.equals("Entrades per al Concert del Trobador");
-        boolean isLegendary = a.nom.equals("Martell de Thor (Llegendari)");
+        boolean isCheese = a.esFormatge();
+        boolean isTickets = a.esEntrades();
+        boolean isLegendary = a.esLegendari();
 
-        // =========================
-        // 1. BEFORE SELL DATE
-        // =========================
+        // BEFORE SELL DATE
         if (!isCheese && !isTickets) {
 
-            if (!isLegendary) {
-                decreaseQuality(a);
+            if (!isLegendary && a.qualitat > 0) {
+                a.qualitat--;
             }
 
         } else {
 
-            increaseQuality(a);
+            if (a.qualitat < 50) {
+                a.qualitat++;
 
-            if (isTickets) {
+                if (isTickets) {
 
-                if (a.diesPerVendre < 11) {
-                    increaseQuality(a);
-                }
+                    if (a.diesPerVendre < 11 && a.qualitat < 50) {
+                        a.qualitat++;
+                    }
 
-                if (a.diesPerVendre < 6) {
-                    increaseQuality(a);
+                    if (a.diesPerVendre < 6 && a.qualitat < 50) {
+                        a.qualitat++;
+                    }
                 }
             }
         }
 
-        // =========================
-        // 2. SELL-IN DECREASE
-        // =========================
+        // DECREASE SELL-IN
         if (!isLegendary) {
             a.diesPerVendre--;
         }
 
-        // =========================
-        // 3. AFTER SELL DATE (REFORZADO Y LIMPIO)
-        // =========================
+        // AFTER SELL DATE
         if (a.diesPerVendre >= 0) {
             return;
         }
@@ -61,7 +57,7 @@ class Magatzem {
         }
 
         if (isCheese) {
-            increaseQuality(a);
+            if (a.qualitat < 50) a.qualitat++;
             return;
         }
 
@@ -70,21 +66,6 @@ class Magatzem {
             return;
         }
 
-        // normal item after expiry
-        decreaseQuality(a);
-    }
-    private void updateNormal(Article a) {
-        if (a.qualitat > 0) {
-            a.qualitat--;
-        }
-    }
-    private void increaseQuality(Article a) {
-        if (a.qualitat < 50) {
-            a.qualitat++;
-        }
-    }
-
-    private void decreaseQuality(Article a) {
         if (a.qualitat > 0) {
             a.qualitat--;
         }
