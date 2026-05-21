@@ -72,4 +72,15 @@ class Magatzem {
             a.qualitat--;
         }
     }
+    private void increaseQuality(Article a) {
+        if (a.qualitat < 50) {
+            a.qualitat++;
+        }
+    }
+
+    private void decreaseQuality(Article a) {
+        if (a.qualitat > 0) {
+            a.qualitat--;
+        }
+    }
 }
