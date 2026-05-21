@@ -17,55 +17,61 @@ class Magatzem {
         boolean isTickets = a.nom.equals("Entrades per al Concert del Trobador");
         boolean isLegendary = a.nom.equals("Martell de Thor (Llegendari)");
 
-        // 1. Actualización de calidad antes de caducidad
+        // =========================
+        // 1. BEFORE SELL DATE
+        // =========================
         if (!isCheese && !isTickets) {
 
-            if (a.qualitat > 0 && !isLegendary) {
-                a.qualitat--;
+            if (!isLegendary) {
+                decreaseQuality(a);
             }
 
         } else {
 
-            if (a.qualitat < 50) {
-                a.qualitat++;
+            increaseQuality(a);
 
-                if (isTickets) {
-                    if (a.diesPerVendre < 11 && a.qualitat < 50) {
-                        a.qualitat++;
-                    }
+            if (isTickets) {
 
-                    if (a.diesPerVendre < 6 && a.qualitat < 50) {
-                        a.qualitat++;
-                    }
+                if (a.diesPerVendre < 11) {
+                    increaseQuality(a);
+                }
+
+                if (a.diesPerVendre < 6) {
+                    increaseQuality(a);
                 }
             }
         }
 
-        // 2. Decremento de días
+        // =========================
+        // 2. SELL-IN DECREASE
+        // =========================
         if (!isLegendary) {
             a.diesPerVendre--;
         }
 
-        // 3. Después de caducidad
-        if (a.diesPerVendre < 0) {
-
-            if (!isCheese && !isTickets) {
-
-                if (a.qualitat > 0 && !isLegendary) {
-                    a.qualitat--;
-                }
-
-            } else if (isCheese) {
-
-                if (a.qualitat < 50) {
-                    a.qualitat++;
-                }
-
-            } else if (isTickets) {
-
-                a.qualitat = 0;
-            }
+        // =========================
+        // 3. AFTER SELL DATE (REFORZADO Y LIMPIO)
+        // =========================
+        if (a.diesPerVendre >= 0) {
+            return;
         }
+
+        if (isLegendary) {
+            return;
+        }
+
+        if (isCheese) {
+            increaseQuality(a);
+            return;
+        }
+
+        if (isTickets) {
+            a.qualitat = 0;
+            return;
+        }
+
+        // normal item after expiry
+        decreaseQuality(a);
     }
     private void updateNormal(Article a) {
         if (a.qualitat > 0) {
