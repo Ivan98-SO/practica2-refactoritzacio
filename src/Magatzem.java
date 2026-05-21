@@ -7,6 +7,12 @@ class Magatzem {
 
     public void actualitzarEstat() {
         for (int i = 0; i < articles.length; i++) {
+            updateArticle(articles[i]);
+        }
+    }
+
+    private void updateArticle(Article a) {
+        for (int i = 0; i < articles.length; i++) {
             if (!articles[i].nom.equals("Formatge Gidurat")
                     && !articles[i].nom.equals("Entrades per al Concert del Trobador")) {
                 if (articles[i].qualitat > 0) {
